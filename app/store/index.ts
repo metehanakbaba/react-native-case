@@ -1,20 +1,6 @@
-import { AnyAction, CombinedState, Reducer } from 'redux';
-import { all, fork } from 'redux-saga/effects';
-import { combineReducers } from '@reduxjs/toolkit';
-import { ProductReducers } from './product/ProductReducers';
-import { ProductState } from './product/ProductTypes';
-import ProductSagas from './product/ProductSaga';
-import { BasketState } from './basket/BasketType';
-import { BasketReducers } from './basket/BasketReducers';
-
-/**
- * The top-level state object.
- * Note: I've placed it here, so it can be rechecked.
- */
-export interface IApplicationState {
-  productsState: ProductState;
-  basketState: BasketState;
-}
+import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
+import { basketReducer } from './slices/basketSlice';
+import apiService from './apiService';
 
 /**
  * Whenever an action is dispatched, Redux will update each top-level
@@ -23,17 +9,23 @@ export interface IApplicationState {
  * the corresponding ApplicationState property type.
  *
  */
-export const rootReducers = (): Reducer<CombinedState<IApplicationState>> =>
-  combineReducers<IApplicationState>({
-    productsState: ProductReducers,
-    basketState: BasketReducers,
-  });
+const rootReducers = {
+  basket: basketReducer,
+  [apiService.reducerPath]: apiService.reducer,
+};
 
-/**
- * Here we use `redux-saga` to trigger actions asynchronously. `redux-saga`
- * uses something called a "generator function", which you can read about here:
- * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*
- */
-export function* rootSagas(): Generator<AnyAction> {
-  yield all([fork(ProductSagas)]);
-}
+const store = configureStore({
+  reducer: rootReducers,
+  middleware: getDefaultMiddleware =>
+    getDefaultMiddleware().concat(apiService.middleware),
+});
+
+export type AppDispatch = typeof store.dispatch;
+export type RootState = ReturnType<typeof store.getState>;
+export type AppThunk<ReturnType = void> = ThunkAction<
+  ReturnType,
+  RootState,
+  unknown,
+  Action<string>
+>;
+export default store;

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
 import { ViewProps } from 'react-native';
-import { IProduct } from '../../store/product/ProductTypes';
 import ProductListImage from './ProductListImage';
 import ProductListDetail from './ProductListDetail';
 import GlobalStyle from '../../assets/styles/GlobalStyle';
+import { IProduct } from '../../store/types';
 
 type Props = {
   item: IProduct;

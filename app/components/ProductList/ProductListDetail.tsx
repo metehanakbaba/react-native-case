@@ -1,59 +1,36 @@
 import * as React from 'react';
-import styled from 'styled-components/native';
-import { PropsWithChildren } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { TouchableOpacityProps } from 'react-native';
-import { useDispatch } from 'react-redux';
+import { useNavigation } from '@react-navigation/native';
 import ProductDescription from '../ProductDescription';
-import { addBasketRequest } from '../../store/basket/BasketActions';
-import { IProduct } from '../../store/product/ProductTypes';
+import AddBasket from '../AddBasket';
+import { useAppDispatch } from '../../hooks/useReduxHooks';
+import { addToBasket } from '../../store/slices/basketSlice';
+import { ContainerWrapper, DescriptionWrapper } from '../Wrappers';
+import { IProduct } from '../../store/types';
 
 interface Props {
   item: IProduct;
 }
 
-const Wrapper: React.FC<PropsWithChildren> = styled.View`
-  width: 100%;
-  background: white;
-  margin: auto;
-  flex: 1;
-  height: 100px;
-  flex-direction: row;
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-`;
-
-const DescriptionWrapper: React.FC<PropsWithChildren> = styled.View`
-  flex: 4;
-  padding-horizontal: 10px;
-  flex-shrink: 1;
-  justify-content: center;
-`;
-const AddBasket: React.FC<TouchableOpacityProps> = styled.TouchableOpacity`
-  flex: 2;
-  background-color: #f1f1f1;
-  justify-content: center;
-  align-items: center;
-  border-bottom-right-radius: 10px;
-  border-left-width: 0.5px;
-  border-left-color: #254053;
-`;
-
 export default function ProductListDetail({ item }: Props) {
-  const dispatch = useDispatch();
-
-  const handleBasket = () => {
-    dispatch(addBasketRequest(item));
-  };
+  const dispatch = useAppDispatch();
+  const navigation = useNavigation();
 
   return (
-    <Wrapper>
+    <ContainerWrapper>
       <DescriptionWrapper>
         <ProductDescription name={item.name} price={item.price} />
       </DescriptionWrapper>
-      <AddBasket onPress={handleBasket}>
+      <AddBasket
+        onPress={() => {
+          dispatch(addToBasket(item));
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          navigation.navigate('Basket');
+        }}
+      >
         <FontAwesome name="shopping-basket" size={20} color="#254053" />
       </AddBasket>
-    </Wrapper>
+    </ContainerWrapper>
   );
 }

@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { Provider } from 'react-redux';
+import { ApiProvider } from '@reduxjs/toolkit/query/react';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 import Navigation from './app/navigation';
 import Splash from './app/screens/Splash';
-import initializeStore from './app/store/initializeStore';
 import useAppLoad, { IUseAppLoadReturn } from './app/hooks/useAppLoad';
+import store from './app/store';
+import ApiService from './app/store/apiService';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -27,18 +29,13 @@ export default function App(): JSX.Element {
     return <Splash />;
   }
 
-  // After the resources are loaded
-  /**
-   * IMPORTANT: Don't change the order! When the order is changed,
-   * it gets rendered 2 times due to the "app Is Ready" variable.
-   */
-  const store = initializeStore();
-
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Provider store={store}>
-        <Navigation />
-      </Provider>
+      <ApiProvider api={ApiService}>
+        <Provider store={store}>
+          <Navigation />
+        </Provider>
+      </ApiProvider>
       <StatusBar />
     </SafeAreaProvider>
   );
