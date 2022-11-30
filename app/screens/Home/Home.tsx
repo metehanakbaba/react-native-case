@@ -1,11 +1,20 @@
 import * as React from 'react';
+import { FlatList } from 'react-native';
+import { IProduct } from '../../store/types';
 import Container from '../../components/Container';
-import Title from '../../components/Title';
+import { useGetProductsQuery } from '../../store/apiService';
+import ProductListItem from '../../components/ProductList/ProductListItem';
 
-export default function Home(): JSX.Element {
+export default function Home() {
+  const { currentData } = useGetProductsQuery(undefined);
   return (
     <Container>
-      <Title>test</Title>
+      <FlatList
+        numColumns={2}
+        data={currentData as unknown as IProduct[]}
+        renderItem={ProductListItem}
+        keyExtractor={(item: IProduct) => String(item.name)}
+      />
     </Container>
   );
 }

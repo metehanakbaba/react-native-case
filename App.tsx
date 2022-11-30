@@ -1,10 +1,14 @@
 import * as React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { ApiProvider } from '@reduxjs/toolkit/query/react';
 import { StatusBar } from 'expo-status-bar';
 import * as SplashScreen from 'expo-splash-screen';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Provider } from 'react-redux';
 import Navigation from './app/navigation';
-import useAppLoad, { IUseAppLoadReturn } from './app/hooks/useAppLoad';
 import Splash from './app/screens/Splash';
+import useAppLoad, { IUseAppLoadReturn } from './app/hooks/useAppLoad';
+import store from './app/store';
+import ApiService from './app/store/apiService';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -19,14 +23,19 @@ SplashScreen.preventAutoHideAsync();
  * @constructor
  */
 export default function App(): JSX.Element {
+  // Before resources are loaded
   const { appIsReady, onLayoutRootView }: IUseAppLoadReturn = useAppLoad();
-
   if (!appIsReady) {
     return <Splash />;
   }
+
   return (
     <SafeAreaProvider onLayout={onLayoutRootView}>
-      <Navigation />
+      <ApiProvider api={ApiService}>
+        <Provider store={store}>
+          <Navigation />
+        </Provider>
+      </ApiProvider>
       <StatusBar />
     </SafeAreaProvider>
   );

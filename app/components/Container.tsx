@@ -1,14 +1,10 @@
 import * as React from 'react';
 import styled from 'styled-components/native';
+import { SafeAreaViewProps } from 'react-native-safe-area-context';
 
-type Props = {
-  children: React.ReactNode;
-};
-
-const Container: React.FC<Props> = styled.View`
+const Container: React.FC<SafeAreaViewProps> = styled.SafeAreaView`
   flex: 1;
-  align-items: center;
-  justify-content: center;
+  background-color: white;
 `;
 
 export default Container;

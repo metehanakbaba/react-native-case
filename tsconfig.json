@@ -15,5 +15,17 @@
   "allowSyntheticDefaultImports": true,               /* Allow default imports from modules with no default export. This does not affect code emit, just typechecking. */
   "esModuleInterop": true,                            /* Enables emit interoperability between CommonJS and ES Modules via creation of namespace objects for all imports. Implies 'allowSyntheticDefaultImports'. */
   "skipLibCheck": false,                              /* Skip type checking of declaration files. */
-  "extends": "expo/tsconfig.base"
+  "paths": {
+    "app/assets/*": ["./app/assets/*"],
+    "app/components/*/*": ["./app/components/*"],
+    "app/config/*": ["./app/config/*"],
+    "app/lib/*": ["./app/lib/*"],
+    "app/models/*": ["./app/models/*"],
+    "app/navigation/*": ["./app/navigation/*"],
+    "app/screens/*": ["./app/screens/*"],
+    "app/services/*": ["./app/services/*"],
+    "app/store/*": ["./app/store/*"],
+    "app/utils/*": ["./app/utils/*"],
+  },
+  "extends": "expo/tsconfig.base",
 }
