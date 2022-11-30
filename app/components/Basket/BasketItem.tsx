@@ -1,102 +1,76 @@
 import * as React from 'react';
-import styled from 'styled-components/native';
+import { Button } from 'react-native';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import {
-  Button,
-  ImageProps,
-  TouchableOpacityProps,
-  ViewProps,
-} from 'react-native';
 import { Swipeable } from 'react-native-gesture-handler';
 import Text from '../Text';
+import CounterArea from './CounterArea';
+import RemoveView from './RemoveView';
+import { BasketWrapper } from '../Wrappers';
+import CounterButton from '../CounterButton';
+import BasketItemImage from './BasketItemImage';
 import ProductDescription from '../ProductDescription';
 import GlobalStyle from '../../assets/styles/GlobalStyle';
-import { IBasket } from '../../store/basket/BasketType';
+import { IBasket } from '../../store/types';
 
-type Props = {
-  item: IBasket;
-};
+export enum HandleType {
+  Remove,
+  Increment,
+  Decrement,
+}
 
-const Wrapper: React.FC<ViewProps> = styled.View`
-  flex-direction: row;
-  flex: 1;
-  padding: 10px;
-  padding-left: 15px;
-  background-color: #fff;
-  margin-vertical: 5px;
-  border-radius: 10px;
-  transform: scale(0.95);
-`;
-
-const BasketItemImage: React.FC<ImageProps> = styled.Image`
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
-`;
-
-const CounterArea: React.FC<ViewProps> = styled.View`
-  flex: 1;
-  flex-direction: row;
-  justify-content: space-around;
-  align-items: top;
-  margin-top: 10px;
-`;
-const DeleteView: React.FC<ViewProps> = styled.View`
-  margin: 0px;
-  align-content: center;
-  justify-content: center;
-`;
-const CounterButton: React.FC<TouchableOpacityProps> = styled.TouchableOpacity`
-  border-radius: 15px
-  background-color: #f1f1f1;
-  height: 30px;
-  width: 30px;
-  justify-content: center;
-  align-items: center;
-`;
-
-export default function BasketItem(
-  { item }: Props,
-  onClick: (id: number) => void,
-) {
+const BasketItem = (
+  item: IBasket,
+  onClick: (id: number, process: HandleType) => void,
+): JSX.Element => {
   const row: Array<Swipeable> = [];
+  const { item: product } = item;
+  const { name, img, price } = product;
+  const { id, quantity } = item;
 
   const renderRightActions = () => {
     return (
-      <DeleteView>
+      <RemoveView>
         <Button
           color="red"
           title="DELETE"
           onPress={() => {
-            onClick(item.id);
+            onClick(id, HandleType.Remove);
           }}
         />
-      </DeleteView>
+      </RemoveView>
     );
   };
 
-  const { name, img, price } = item.item;
   return (
     <Swipeable
       useNativeAnimations
       renderRightActions={() => renderRightActions()}
       ref={(ref: Swipeable) => {
-        row[item.id] = ref;
+        row[id] = ref;
       }}
     >
-      <Wrapper style={GlobalStyle.shadow}>
+      <BasketWrapper style={GlobalStyle.shadow}>
         <BasketItemImage source={{ uri: img }} />
         <ProductDescription name={name} price={price} />
         <CounterArea>
-          <CounterButton>
+          <CounterButton
+            onPress={() => {
+              onClick(id, HandleType.Increment);
+            }}
+          >
             <FontAwesome name="angle-up" size={25} color="#254053" />
           </CounterButton>
-          <Text style={{ marginTop: 9 }}>10</Text>
-          <CounterButton>
+          <Text style={{ marginTop: 9 }}>{quantity}</Text>
+          <CounterButton
+            onPress={() => {
+              onClick(id, HandleType.Decrement);
+            }}
+          >
             <FontAwesome name="angle-down" size={25} color="#254053" />
           </CounterButton>
         </CounterArea>
-      </Wrapper>
+      </BasketWrapper>
     </Swipeable>
   );
-}
+};
+export default BasketItem;
