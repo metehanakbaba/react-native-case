@@ -6,9 +6,10 @@ type Props = {
 };
 
 const Container: React.FC<Props> = styled.View`
-  flex: 1;
-  align-items: center;
-  justify-content: center;
+  border: 2px solid gray;
+  display: flex;
+  flex-wrap: wrap;
+  height: 300px;
 `;
 
 export default Container;

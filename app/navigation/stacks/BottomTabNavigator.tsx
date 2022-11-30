@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { RootTabParamList } from '../types';
 import Home from '../../screens/Home';
+import Basket from '../../screens/Basket';
 
 const BottomTab = createBottomTabNavigator<RootTabParamList>();
 
@@ -24,6 +25,21 @@ export default function BottomTabNavigator(): JSX.Element {
           // render icons if any
           tabBarIcon: ({ color, size }) => {
             return <FontAwesome name="home" color={color} size={size} />;
+          },
+          tabBarLabelPosition: 'beside-icon',
+        })}
+      />
+      <BottomTab.Screen
+        name="Basket"
+        component={Basket}
+        options={() => ({
+          title: 'Basket',
+          headerShown: true,
+          // render icons if any
+          tabBarIcon: ({ color, size }) => {
+            return (
+              <FontAwesome name="shopping-cart" color={color} size={size} />
+            );
           },
           tabBarLabelPosition: 'beside-icon',
         })}
